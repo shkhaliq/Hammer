@@ -117,7 +117,7 @@ public final class EventGenerator {
         do {
             try self.waitUntil(self.isWindowReady, timeout: timeout)
         } catch {
-            throw HammerError.windowIsNotReadyForInteraction
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "waitUntilWindowIsReady")
         }
     }
 

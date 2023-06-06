@@ -2,7 +2,7 @@ import UIKit
 
 /// https://github.com/lyft/Hammer#troubleshooting.
 public enum HammerError: Error {
-    case windowIsNotReadyForInteraction
+    case windowIsNotReadyForInteraction(fromPath: String)
     case windowIsNotKey
 
     case deviceDoesNotSupportTouches
@@ -39,8 +39,9 @@ public enum HammerError: Error {
 extension HammerError: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .windowIsNotReadyForInteraction:
+        case .windowIsNotReadyForInteraction(let path):
             return """
+                Got the error from: \(path)
                 The app or window is not ready for interaction. Ensure that your tests are running in a \
                 host application and that you have given enough time for the view to present on screen. \
                 For more troubleshooting tips see: https://github.com/lyft/Hammer#troubleshooting.

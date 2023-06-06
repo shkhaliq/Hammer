@@ -290,7 +290,7 @@ extension EventGenerator {
     /// - throws: If one of the points is not hittable
     func checkPointsAreHittable(_ points: [CGPoint]) throws {
         guard self.isWindowReady else {
-            throw HammerError.windowIsNotReadyForInteraction
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "checkPointsAreHittable")
         }
 
         for point in points {
@@ -313,7 +313,7 @@ extension EventGenerator {
         }
 
         guard self.isWindowReady else {
-            throw HammerError.windowIsNotReadyForInteraction
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "windowHitPoint")
         }
 
         guard self.viewIsVisible(view) else {
