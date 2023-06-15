@@ -114,33 +114,44 @@ public final class EventGenerator {
     ///
     /// - parameter timeout: The maximum time to wait for the window to be ready.
     public func waitUntilWindowIsReady(timeout: TimeInterval = 3) throws {
-        do {
-            try self.waitUntil(self.isWindowReady, timeout: timeout)
-        } catch {
-            throw HammerError.windowIsNotReadyForInteraction(fromPath: "waitUntilWindowIsReady")
+        let startTime = Date().timeIntervalSinceReferenceDate
+        while try isWindowReady() {
+            if Date().timeIntervalSinceReferenceDate - startTime > timeout {
+                throw HammerError.waitConditionTimeout(timeout)
+            }
+            
+            try self.wait(timeout)
         }
     }
 
     /// Returns if the window is ready to receive user interaction events
-    public var isWindowReady: Bool {
-        guard !(UIApplication.shared as UIApplicationDeprecated).isIgnoringInteractionEvents
-                && self.window.isHidden == false
-                && self.window.isUserInteractionEnabled
-                && self.window.rootViewController?.viewIfLoaded != nil
-                && self.window.rootViewController?.isBeingPresented == false
-                && self.window.rootViewController?.isBeingDismissed == false
-                && self.window.rootViewController?.isMovingToParent == false
-                && self.window.rootViewController?.isMovingFromParent == false else
-        {
-            return false
+    public func isWindowReady() throws -> Bool {
+        guard !(UIApplication.shared as UIApplicationDeprecated).isIgnoringInteractionEvents else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "isIgnoringInteractionEvents")
         }
-
+        guard self.window.isHidden == false else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "windowIsHidden")
+        }
+        guard self.window.rootViewController?.viewIfLoaded != nil else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "viewIfLoaded")
+        }
+        guard self.window.rootViewController?.isBeingPresented == false else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsBeingPresented")
+        }
+        guard self.window.rootViewController?.isBeingDismissed == false else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsBeingDismissed")
+        }
+        guard self.window.rootViewController?.isMovingToParent == false else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsMovingToParent")
+        }
+        guard self.window.rootViewController?.isMovingFromParent == false else {
+            throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsMovingFromParent")
+        }
         if #available(iOS 13.0, *) {
             guard self.window.windowScene?.activationState == .foregroundActive else {
-                return false
+                throw HammerError.windowIsNotReadyForInteraction(fromPath: "foreGroundActive")
             }
         }
-
         return true
     }
 
