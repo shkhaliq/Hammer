@@ -148,8 +148,9 @@ public final class EventGenerator {
             throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsMovingFromParent")
         }
         if #available(iOS 13.0, *) {
-            guard self.window.windowScene?.activationState == .foregroundActive else {
-                throw HammerError.windowIsNotReadyForInteraction(fromPath: "foreGroundActive")
+            guard let windowScene = self.window.windowScene, windowScene.activationState == .foregroundActive else {
+                let windowScene = self.window.windowScene?.activationState.stringValue ?? ""
+                throw HammerError.windowIsNotReadyForInteraction(fromPath: "foreGroundActive, currentState is \(windowScene)")
             }
         }
         return true
@@ -201,3 +202,21 @@ private protocol UIApplicationDeprecated {
 }
 
 extension UIApplication: UIApplicationDeprecated {}
+
+@available(iOS 13.0, *)
+extension UIWindowScene.ActivationState {
+    var stringValue: String {
+        switch self {
+        case .background:
+            return "background"
+        case .foregroundActive:
+            return "foregroundActive"
+        case .foregroundInactive:
+            return "foregroundInactive"
+        case .unattached:
+            return "unattached"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}
