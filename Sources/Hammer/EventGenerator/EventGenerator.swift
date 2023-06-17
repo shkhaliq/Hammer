@@ -147,12 +147,12 @@ public final class EventGenerator {
         guard self.window.rootViewController?.isMovingFromParent == false else {
             throw HammerError.windowIsNotReadyForInteraction(fromPath: "rootIsMovingFromParent")
         }
-        if #available(iOS 13.0, *) {
-            guard let windowScene = self.window.windowScene, windowScene.activationState == .foregroundActive else {
-                let windowScene = self.window.windowScene?.activationState.stringValue ?? ""
-                throw HammerError.windowIsNotReadyForInteraction(fromPath: "foreGroundActive, currentState is \(windowScene)")
-            }
-        }
+//        if #available(iOS 13.0, *) {
+//            guard let windowScene = self.window.windowScene, windowScene.activationState == .foregroundActive else {
+//                let windowScene = self.window.windowScene?.activationState.stringValue ?? ""
+//                throw HammerError.windowIsNotReadyForInteraction(fromPath: "foreGroundActive, currentState is \(windowScene)")
+//            }
+//        }
         return true
     }
 
